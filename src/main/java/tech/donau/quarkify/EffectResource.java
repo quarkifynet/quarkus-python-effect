@@ -13,15 +13,20 @@ import java.net.URL;
 
 @Path("/effect")
 public class EffectResource {
+    public static Context context = Context.newBuilder().allowIO(true).allowAllAccess(true).build();
+    private static boolean effectPyLoaded = false;
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     public String hello(String input) throws IOException {
-        final URL effectPy = getClass().getClassLoader().getResource("effect.py");
-        System.out.println(effectPy);
-        Context context = Context.newBuilder().allowIO(true).allowAllAccess(true).build();
-        context.eval("python", String.format("x = [%s]", input));
-        Value effectValue = context.eval(Source.newBuilder("python", effectPy).build());
+        if(!effectPyLoaded) {
+            final URL effectPy = getClass().getClassLoader().getResource("effect.py");
+            context.eval(Source.newBuilder("python", effectPy).build());
+            System.out.println(effectPy);
+        }
+        final String pyCode = String.format("x = [%s]; y = [i*2 for i in x]; x.append(10)", input);
+        context.eval("python", pyCode);
+        Value effectValue = context.eval("python", "cohen_d(x,y)");
         return effectValue.toString();
     }
 }
