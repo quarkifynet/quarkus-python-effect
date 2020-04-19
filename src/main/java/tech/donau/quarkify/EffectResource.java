@@ -13,13 +13,13 @@ import java.net.URL;
 
 @Path("/effect")
 public class EffectResource {
+    public static Context context = Context.newBuilder().allowIO(true).allowAllAccess(true).build();
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() throws IOException {
         final URL effectPy = getClass().getClassLoader().getResource("effect.py");
         System.out.println(effectPy);
-        Context context = Context.newBuilder().allowIO(true).allowAllAccess(true).build();
         Value effectValue = context.eval(Source.newBuilder("python", effectPy).build());
         return effectValue.toString();
     }
