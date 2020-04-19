@@ -20,8 +20,10 @@ public class EffectResource {
     public String hello() throws IOException {
         String effectPy = new String(Files.readAllBytes(Paths.get(getClass().getClassLoader().getResource("effect.py").getPath())), StandardCharsets.UTF_8);
         System.out.println(effectPy);
-        Context context = Context.newBuilder().allowIO(true).build();
+        Context context = Context.newBuilder().allowIO(true).allowAllAccess(true).build();
+	System.out.println("before");
         Value effectValue = context.eval("python", effectPy);
-        return effectValue.asString();
+	System.out.println("aftter");
+        return effectValue.toString();
     }
 }

@@ -1,20 +1,12 @@
 import site
-import pandas as pd
-import numpy as np
-import random
-import math
+from numpy import std, mean, sqrt
 
-df = pd.DataFrame()
-df['some_column'] = [random.gauss(-4,4) for _ in range(10000)]
-df['other_column'] = [random.gauss(1,4) for _ in range(10000)]
-
-def CohenEffectSize(group1, group2):
-    diff = group1.mean() - group2.mean()
-    var1 = group1.var()
-    var2 = group2.var()
-    n1, n2 = len(group1), len(group2)
-    pooled_var = (n1 * var1 + n2 * var2) / (n1 + n2)
-    d = diff / math.sqrt(pooled_var)
-    return d
-
-CohenEffectSize(df.some_column, df.other_column)
+def cohen_d(x,y):
+    nx = len(x)
+    ny = len(y)
+    dof = nx + ny - 2
+    return (mean(x) - mean(y)) / sqrt(((nx-1)*std(x, ddof=1) ** 2 + (ny-1)*std(y, ddof=1) ** 2) / dof)
+x = [2,4,7,3,7,35,8,9]
+y = [i*2 for i in x]
+x.append(10)
+(mean(x) - mean(y)) / sqrt((std(x, ddof=1) ** 2 + std(y, ddof=1) ** 2) / 2.0)
