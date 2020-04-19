@@ -22,6 +22,7 @@ public class EffectResource {
         if(!effectPyLoaded) {
             final URL effectPy = getClass().getClassLoader().getResource("effect.py");
             context.eval(Source.newBuilder("python", effectPy).build());
+            effectPyLoaded = true;
             System.out.println(effectPy);
         }
         final String pyCode = String.format("x = [%s]; y = [i*2 for i in x]; x.append(10)", input);
